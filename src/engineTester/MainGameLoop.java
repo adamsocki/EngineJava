@@ -19,15 +19,18 @@ public class MainGameLoop {
 		Renderer renderer = new Renderer();
 		
 		 float[] vertices = {
-				    -0.5f, 0.5f, 0f,
-				    -0.5f, -0.5f, 0f,
-				    0.5f, -0.5f, 0f,
-				    0.5f, -0.5f, 0f,
-				    0.5f, 0.5f, 0f,
-				    -0.5f, 0.5f, 0f
+				    -0.5f, 0.5f, 0f,	//v0
+				    -0.5f, -0.5f, 0f,	//v1
+				    0.5f, -0.5f, 0f,	//v2
+				    0.5f, 0.5f, 0f,	//v3
 				  };
 		 
-		RawModel model = loader.loadToVAO(vertices);
+		int[] indices = {
+			0, 1, 3,
+			3, 1, 2
+		};
+		 
+		RawModel model = loader.loadToVAO(vertices, indices);
 		
 		while(!Display.isCloseRequested())
 		{
