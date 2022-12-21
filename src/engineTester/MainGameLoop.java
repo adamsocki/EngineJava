@@ -1,11 +1,15 @@
 package engineTester;
 
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector3f;
 
+import entities.Camera;
+import entities.Entity;
 import models.RawModel;
 import models.TexturedModel;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
+import renderEngine.OBJParser;
 import renderEngine.Renderer;
 import shaders.StaticShader;
 import textures.ModelTexture;
@@ -16,39 +20,28 @@ public class MainGameLoop {
 
 		DisplayManager.createDisplay();
 		Loader loader = new Loader();
-		Renderer renderer = new Renderer();
 		StaticShader shader = new StaticShader();
+		Renderer renderer = new Renderer(shader);
+			
+		//RawModel model = loader.loadToVAO(vertices,textureCoords,indices);
+		RawModel model = OBJParser.loadObjModel("stall", loader);
 		
-		float[] vertices = {			
-				-0.5f,0.5f,0,	//V0
-				-0.5f,-0.5f,0,	//V1
-				0.5f,-0.5f,0,	//V2
-				0.5f,0.5f,0		//V3
-		};
+		TexturedModel staticModel = new TexturedModel(model,new ModelTexture(loader.loadTexture("stallTexture")));
 		
-		int[] indices = {
-				0,1,3,	//Top left triangle (V0,V1,V3)
-				3,1,2	//Bottom right triangle (V3,V1,V2)
-		};
+		Entity entity = new Entity(staticModel, new Vector3f(0,0,-5),0,0,0,1);
 		
-		float[] textureCoords = {
-			0,0,	// v0
-			0,1,	// v1
-			1,1,	// v2
-			1,0		// v3
-		};
-		
-		RawModel model = loader.loadToVAO(vertices,textureCoords,indices);
-		ModelTexture texture = new ModelTexture(loader.loadTexture("image"));
-		TexturedModel texturedModel = new TexturedModel(model, texture);
+		Camera camera = new Camera();
 		
 		while(!Display.isCloseRequested()){
 			//game logic
+			entity.increaseRotation(0.08f, 0.08f, -0.08f);
 			renderer.prepare();
+			camera.move();
 			shader.start();
-			renderer.render(texturedModel);
+			shader.loadViewMatrix(camera);
+			renderer.render(entity,shader);
 			shader.stop();
-			DisplayManager.updateDisplay();			
+			DisplayManager.updateDisplay();		
 		}
 
 		shader.cleanUp();
