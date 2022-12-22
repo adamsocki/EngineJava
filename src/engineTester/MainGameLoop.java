@@ -16,8 +16,9 @@ import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import renderEngine.OBJParser;
-import renderEngine.Renderer;
+import renderEngine.EntityRenderer;
 import shaders.StaticShader;
+import terrains.Terrain;
 import textures.ModelTexture;
 
 public class MainGameLoop {
@@ -30,32 +31,33 @@ public class MainGameLoop {
 		//Renderer renderer = new Renderer(shader);
 			
 		//RawModel model = loader.loadToVAO(vertices,textureCoords,indices);
-		RawModel model = OBJParser.loadObjModel("dragon", loader);
+		RawModel model = OBJParser.loadObjModel("bld1", loader);
 		
-		TexturedModel staticModel = new TexturedModel(model,new ModelTexture(loader.loadTexture("white")));
+		TexturedModel staticModel = new TexturedModel(model,new ModelTexture(loader.loadTexture("bld1")));
 		ModelTexture texture = staticModel.getTexture();
 		texture.setShineDamper(10);
 		texture.setReflectivity(1);
 		
 		//Entity entity = new Entity(staticModel, new Vector3f(0,-4,-25),0,0,0,1);
-		Light light = new Light(new Vector3f(0,0,-20), new Vector3f(1,1,1));
+		Light light = new Light(new Vector3f(20000,20000,2000), new Vector3f(1,1,1));
 		
-		
+		Terrain terrain = new Terrain(-1,-1,loader, new ModelTexture(loader.loadTexture("grass")));
+		//Terrain terrain2 = new Terrain(-1,-1,loader, new ModelTexture(loader.loadTexture("grass")));
 		
 		Camera camera = new Camera();
 		// create entities
 		List<Entity> allDragons = new ArrayList<Entity>();
 		Random random = new Random();
 		
-		for (int i = 0; i < 43; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			float x = random.nextFloat() * 100 - 50;
-			float y = random.nextFloat() * 100 - 50;
+			//float y = random.nextFloat() * 100 - 50;
+			float y = 0;
 			float z = random.nextFloat() * -300;
 			allDragons.add(new Entity(
 					staticModel, new Vector3f(x, y, z), 
-					random.nextFloat() * 180f, random.nextFloat() * 180f, 
-					0f, 1f));
+					0f, 0f, 0f, 8f));
  		}
 		
 		MasterRenderer renderer = new MasterRenderer();
@@ -67,6 +69,8 @@ public class MainGameLoop {
 			//entity.increaseRotation(0.08f, 0.08f, -0.08f);
 			//renderer.prepare();
 			camera.move();
+			renderer.processTerrain(terrain);
+			//renderer.processTerrain(terrain2);
 			
 			for (Entity dragon:allDragons)
 			{
