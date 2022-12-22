@@ -31,33 +31,37 @@ public class MainGameLoop {
 		//Renderer renderer = new Renderer(shader);
 			
 		//RawModel model = loader.loadToVAO(vertices,textureCoords,indices);
-		RawModel model = OBJParser.loadObjModel("bld1", loader);
+		RawModel fernModel = OBJParser.loadObjModel("fern", loader);
 		
-		TexturedModel staticModel = new TexturedModel(model,new ModelTexture(loader.loadTexture("bld1")));
-		ModelTexture texture = staticModel.getTexture();
-		texture.setShineDamper(10);
-		texture.setReflectivity(1);
+		TexturedModel texturedFernModel = new TexturedModel(fernModel,new ModelTexture(loader.loadTexture("fern")));
+		
+		ModelTexture fernTexture = texturedFernModel.getTexture();
+		fernTexture.setHasTransparency(true);
+		fernTexture.setShineDamper(10);
+		fernTexture.setReflectivity(1);
+		fernTexture.setUseFakeLighting(true);
 		
 		//Entity entity = new Entity(staticModel, new Vector3f(0,-4,-25),0,0,0,1);
 		Light light = new Light(new Vector3f(20000,20000,2000), new Vector3f(1,1,1));
 		
-		Terrain terrain = new Terrain(-1,-1,loader, new ModelTexture(loader.loadTexture("grass")));
-		//Terrain terrain2 = new Terrain(-1,-1,loader, new ModelTexture(loader.loadTexture("grass")));
+		Terrain terrain = new Terrain(-0,-1,loader, new ModelTexture(loader.loadTexture("grass")));
+		Terrain terrain2 = new Terrain(-1,-1,loader, new ModelTexture(loader.loadTexture("grass")));
 		
 		Camera camera = new Camera();
-		// create entities
-		List<Entity> allDragons = new ArrayList<Entity>();
 		Random random = new Random();
-		
-		for (int i = 0; i < 3; i++)
+
+		// create entities
+		//List<Entity> allDragons = new ArrayList<Entity>();
+		List<Entity> allFerns = new ArrayList<Entity>();
+		for (int i = 0; i < 80; i++)
 		{
 			float x = random.nextFloat() * 100 - 50;
 			//float y = random.nextFloat() * 100 - 50;
 			float y = 0;
 			float z = random.nextFloat() * -300;
-			allDragons.add(new Entity(
-					staticModel, new Vector3f(x, y, z), 
-					0f, 0f, 0f, 8f));
+			allFerns.add(new Entity(
+					texturedFernModel, new Vector3f(x, y, z), 
+					0f, 0f, 0f, 0.4f));
  		}
 		
 		MasterRenderer renderer = new MasterRenderer();
@@ -70,11 +74,11 @@ public class MainGameLoop {
 			//renderer.prepare();
 			camera.move();
 			renderer.processTerrain(terrain);
-			//renderer.processTerrain(terrain2);
+			renderer.processTerrain(terrain2);
 			
-			for (Entity dragon:allDragons)
+			for (Entity ferns:allFerns)
 			{
-				renderer.processEntity(dragon);
+				renderer.processEntity(ferns);
 			}
 			//shader.start();
 			//shader.loadLight(light);
