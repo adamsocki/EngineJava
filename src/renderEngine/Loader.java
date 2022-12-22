@@ -26,7 +26,7 @@ public class Loader
 	private List<Integer> vbos = new ArrayList<Integer>();
 	private List<Integer> textures = new ArrayList<Integer>();
 	
-	public RawModel loadToVAO(float[] positions, float[] textureCoords, int[] indices)
+	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices)
 	{
 		//1. create empty vao and get id of it
 		int vaoID = createVAO();
@@ -36,6 +36,7 @@ public class Loader
 		storeDataInAttributeList(0, 3, positions);
 		//2.1 store textureCoords into attribute 1
 		storeDataInAttributeList(1, 2, textureCoords);
+		storeDataInAttributeList(2, 3, normals);
 		//3. now that we are finished with it, we unbind it
 		unbindVAO();
 		//4 return the data of the vao/model

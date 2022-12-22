@@ -106,7 +106,7 @@ public class OBJParser {
 		{
 			indicesArray[i] = indices.get(i);
 		}
-		return loader.loadToVAO(verticesArray, texturesArray, indicesArray);
+		return loader.loadToVAO(verticesArray, texturesArray, normalsArray, indicesArray);
 	}
 	
 	
