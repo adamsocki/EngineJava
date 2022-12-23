@@ -10,6 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
+import entities.Player;
 import models.RawModel;
 import models.TexturedModel;
 import objConverter.ModelData;
@@ -22,6 +23,8 @@ import renderEngine.EntityRenderer;
 import shaders.StaticShader;
 import terrains.Terrain;
 import textures.ModelTexture;
+import textures.TerrainTexture;
+import textures.TerrainTexturePack;
 
 public class MainGameLoop {
 
@@ -29,6 +32,18 @@ public class MainGameLoop {
 
 		DisplayManager.createDisplay();
 		Loader loader = new Loader();
+		
+		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("grassy"));
+		TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("dirt"));
+		TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("pinkFlowers"));
+		TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("path"));
+		
+		TerrainTexturePack texturePack = new TerrainTexturePack(
+				backgroundTexture, rTexture, gTexture, bTexture);
+		
+		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
+		
+		
 		//StaticShader shader = new StaticShader();
 		//Renderer renderer = new Renderer(shader);
 			
@@ -50,8 +65,8 @@ public class MainGameLoop {
 		//Entity entity = new Entity(staticModel, new Vector3f(0,-4,-25),0,0,0,1);
 		Light light = new Light(new Vector3f(20000,20000,2000), new Vector3f(1,1,1));
 		
-		Terrain terrain = new Terrain(-0,-1,loader, new ModelTexture(loader.loadTexture("grass")));
-		Terrain terrain2 = new Terrain(-1,-1,loader, new ModelTexture(loader.loadTexture("grass")));
+		Terrain terrain = new Terrain(-0,-1,loader, texturePack, blendMap);
+		Terrain terrain2 = new Terrain(-1,-1,loader, texturePack, blendMap);
 		
 		Camera camera = new Camera();
 		Random random = new Random();
@@ -72,6 +87,12 @@ public class MainGameLoop {
 		
 		MasterRenderer renderer = new MasterRenderer();
 		
+		RawModel bunnyModel = OBJParser.loadObjModel("bunny", loader);
+		TexturedModel stanfordBunny = new TexturedModel(bunnyModel, new ModelTexture(
+				loader.loadTexture("white")));
+				
+		Player player = new Player(stanfordBunny, new Vector3f(100, 0, -50), 0,0,0,1);
+		
 		while(!Display.isCloseRequested()){
 			
 			
@@ -79,6 +100,8 @@ public class MainGameLoop {
 			//entity.increaseRotation(0.08f, 0.08f, -0.08f);
 			//renderer.prepare();
 			camera.move();
+			player.move();
+			renderer.processEntity(player);
 			renderer.processTerrain(terrain);
 			renderer.processTerrain(terrain2);
 			
