@@ -68,7 +68,6 @@ public class MainGameLoop {
 		Terrain terrain = new Terrain(-0,-1,loader, texturePack, blendMap);
 		Terrain terrain2 = new Terrain(-1,-1,loader, texturePack, blendMap);
 		
-		Camera camera = new Camera();
 		Random random = new Random();
 
 		// create entities
@@ -91,7 +90,8 @@ public class MainGameLoop {
 		TexturedModel stanfordBunny = new TexturedModel(bunnyModel, new ModelTexture(
 				loader.loadTexture("white")));
 				
-		Player player = new Player(stanfordBunny, new Vector3f(100, 0, -50), 0,0,0,1);
+		Player player = new Player(stanfordBunny, new Vector3f(100, 0, -50), 0,180,0,0.6f);
+		Camera camera = new Camera(player);
 		
 		while(!Display.isCloseRequested()){
 			
@@ -99,8 +99,8 @@ public class MainGameLoop {
 			//game logic
 			//entity.increaseRotation(0.08f, 0.08f, -0.08f);
 			//renderer.prepare();
-			camera.move();
 			player.move();
+			camera.move();
 			renderer.processEntity(player);
 			renderer.processTerrain(terrain);
 			renderer.processTerrain(terrain2);
