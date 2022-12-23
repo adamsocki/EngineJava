@@ -12,6 +12,8 @@ import entities.Entity;
 import entities.Light;
 import models.RawModel;
 import models.TexturedModel;
+import objConverter.ModelData;
+import objConverter.objFileLoader;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
@@ -31,7 +33,11 @@ public class MainGameLoop {
 		//Renderer renderer = new Renderer(shader);
 			
 		//RawModel model = loader.loadToVAO(vertices,textureCoords,indices);
-		RawModel fernModel = OBJParser.loadObjModel("fern", loader);
+		ModelData data = objFileLoader.loadOBJ("fern");
+		
+
+		//RawModel fernModel = OBJParser.loadObjModel("fern", loader);
+		RawModel fernModel = loader.loadToVAO(data.getVertices(), data.getTextureCoords(), data.getNormals(), data.getIndices());
 		
 		TexturedModel texturedFernModel = new TexturedModel(fernModel,new ModelTexture(loader.loadTexture("fern")));
 		
